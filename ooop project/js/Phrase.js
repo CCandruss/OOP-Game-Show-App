@@ -17,18 +17,25 @@
                 li.setAttribute('class', 'space')
                 ul.appendChild(li);
             } else{
-                li.setAttribute('class', `hide letter ${allSplit[i]}`)
+                li.setAttribute('class', `hide letter ${allSplit[i]}`);
+                li.setAttribute('id', 'letters')
                 ul.appendChild(li);
             }
         }
     }
     checkLetter(letter){
-        for(let i = 0; i < allSplit.length; i++){
-            if(letter === allSplit.length[i]){
-                return true;
+        let letterCheck = 0;
+        for(let i = 0; i < this.phrase.length; i++){
+            if(letter === this.phrase[i]){
+                letterCheck += 1;
             } else {
-                return false;
+                letterCheck += 0;
             }
+        }
+        if(letterCheck > 0){
+            return true;
+        } else {
+            return false;
         }
     }
     showMatchedLetter(letter){
