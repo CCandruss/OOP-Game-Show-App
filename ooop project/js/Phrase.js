@@ -4,8 +4,9 @@
 
  class Phrase{
     constructor(phrase){
-        this.phrase = phrase.toLowerCase();
+        this.phrase = phrase;
     }
+    //adds phrase to page
     addPhraseToDisplay(){
         let allSplit = this.phrase.split("");
 
@@ -23,6 +24,7 @@
             }
         }
     }
+    //returns boolean value of true if letter is in phrase
     checkLetter(letter){
         let letterCheck = 0;
         for(let i = 0; i < this.phrase.length; i++){
@@ -38,14 +40,16 @@
             return false;
         }
     }
+    //change classname and textcontent of li elements added in addPhraseToDisplay() method
     showMatchedLetter(letter){
-        if(this.checkLetter()){
-            let letterInput = document.querySelectorAll(`.hide letter ${letter}`);
-            letterInput.setAttribute('class', 'show')
+        if(this.checkLetter(letter)){
+            let letterInput = document.querySelectorAll(`#letters`);
+            for(let i = 0; i < letterInput.length; i++){
+                if(letterInput[i].className === `hide letter ${letter}`){ 
+                    letterInput[i].textContent = letter;
+                    letterInput[i].className = `show letter ${letter}`;
+                }
+            }
         }
     }
 }
-
-
-// const test = new Phrase('Hello');
-// console.log(test.addPhraseToDisplay());

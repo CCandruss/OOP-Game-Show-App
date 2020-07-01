@@ -4,25 +4,20 @@
 class Game{
     constructor(){
         this.missed = 0;
-        this.phrases = ['going to hell in a hand basket',
-        'rub a little dirt on it',
-        'on a wild goose chase',
-        'good things come to those who wait',
-        'it is not rocket science',
+        this.phrases = ['on a wild goose chase',
         'bite the bullet',
-        'aint nothin to it but to do it',
         'break a leg',
         'beat around the bush',
-        'call it a day',
-        'do or do not there is no try'];
+        'call it a day'];
         this.activePhrase = null;
     }
-    
+    //method generating a random number to select a phrase based on index value
     getRandomPhrase(){
         let j = Math.floor(Math.random()*this.phrases.length);
         const phrase = new Phrase(this.phrases[j]);
         return phrase;
     }
+    //method to begin game called in app.js
     startGame(){
         const startScreen = document.getElementById('overlay');
         startScreen.style.display = 'none';
@@ -30,22 +25,38 @@ class Game{
         this.activePhrase = newPhrase;
         this.activePhrase.addPhraseToDisplay(newPhrase);
     }
-    handleInteraction(){
-
+    // handles on screen button clicks
+    // param html button target
+    handleInteraction(button){
+        button.disabled = true;
+        if(this.activePhrase.checkLetter(button.innerText) === true){
+            button.className = 'chosen';
+            this.activePhrase.showMatchedLetter(button.innerText);
+            if(this.checkForWin()){
+                this.gameOver();
+            }
+        } else {
+            button.className = 'wrong';
+            this.removeLife();
+        }
     }
+    //return boolean value of true if alll letters have been found
     checkForWin(){
         const letters = document.querySelectorAll('#letters');
-        let win = false;
-        for(let i = 0; i < this.activePhrase.length; i++){
-            if(letters[i].className !== 'show'){
-                win = false;
-            } else {
-                win = true;
+        let win = 0;
+        for(let i = 0; i < letters.length; i++){
+            if(letters[i].textContent === ''){
+                win += 1;
             }
         }
-        return win;
+        if(win === 0){
+            return true;
+        } else {
+            return false;
+        }
+
     }
-    //         `This method removes a life from the scoreboard, by replacing one
+    //This method removes a life from the scoreboard, by replacing one
 // of the `liveHeart.png` images with a `lostHeart.png` image (found in the `images`
 // folder) and increments the `missed` property. If the player has five missed
 // guesses (i.e they're out of lives), then end the game by calling the `gameOver()`
@@ -56,6 +67,9 @@ class Game{
             this.missed += 1;
             lives[this.missed - 1].firstElementChild.setAttribute('src', 'images/lostHeart.png');
         }
+        if(this.missed === 5){
+            this.gameOver();
+        }
     }
 //   This method displays the original start screen overlay, and
 // depending on the outcome of the game, updates the overlay `h1` element with a
@@ -64,6 +78,7 @@ class Game{
     gameOver(){
         const startScreen = document.getElementById('overlay');
         const winMessage = document.querySelector('#game-over-message');
+        const lives = document.querySelectorAll('.tries');
         startScreen.style.display = 'inherit';
         if(this.checkForWin()){
             winMessage.textContent = `Congratulations you're a winner!`;
@@ -72,10 +87,23 @@ class Game{
             winMessage.textContent = `You are out of lives!`;
             startScreen.className = 'lose';
         }
+        this.missed = 0;
+        const allKeys = document.querySelectorAll('#keys');
+        for(let i = 0; i < allKeys.length; i++){
+            allKeys[i].className = 'key';
+            allKeys[i].disabled = false;
+        }
+        const div = document.getElementById('phrase');
+        const ul = div.firstElementChild;
+        while (ul.firstChild) {
+            //The list is LIVE so it will re-index each call
+            ul.removeChild(ul.firstChild);
+        }
+        for(let i = 0; i < lives.length; i++){
+            lives[i].firstElementChild.setAttribute('src', 'images/liveHeart.png');
+        }
     }
 }
-
-
     
 
 
